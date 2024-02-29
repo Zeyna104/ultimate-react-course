@@ -56,7 +56,7 @@
     "nodejs_package_manager_path": "npm",
     "prettierjs.PrettierConfiguration.Package": "C:\\Users\\zzeyn\\OneDrive\\Рабочий стол\\Education\\ultimate-react-course\\05-travel-list\\starter\\travel-list\\node_modules\\prettier",
     "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "settings.sync",
     "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2023.1.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
@@ -83,6 +83,8 @@
       <workItem from="1704131205002" duration="56000" />
       <workItem from="1704131284693" duration="5361000" />
       <workItem from="1708689965950" duration="637000" />
+      <workItem from="1708716295695" duration="154000" />
+      <workItem from="1708716771545" duration="344000" />
     </task>
     <servers />
   </component>

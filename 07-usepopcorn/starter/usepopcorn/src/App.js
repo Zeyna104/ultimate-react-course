@@ -50,9 +50,16 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
 // Structural Components
+
+const KEY = 'f047f37f'
+const searchInput = 'the conjuring'
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData)
-  const [watched, setWatched] = useState(tempWatchedData)
+  const [movies, setMovies] = useState([])
+  const [watched, setWatched] = useState([])
+
+  fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${searchInput}`)
+    .then((res) => res.json())
+    .then((data) => console.log(data.Search))
   return (
     <>
       <Navbar>
@@ -251,4 +258,3 @@ function WatchedSummary({ watched }) {
 }
 
 // ----------------------------------------------------------------
-
