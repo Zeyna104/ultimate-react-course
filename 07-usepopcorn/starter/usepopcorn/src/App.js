@@ -63,12 +63,15 @@ export default function App() {
   const [selectedID, setSelectedID] = useState(null)
 
   useEffect(() => {
+    const controller = new AbortController()
+
     async function fetchMovies() {
       try {
         setIsLoading(true)
         setError('')
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         )
         if (!res.ok)
           throw new Error('Something went wrong with fetching movies')
@@ -78,8 +81,10 @@ export default function App() {
         setMovies(data.Search)
         setIsLoading(false)
       } catch (err) {
-        console.error(err)
-        setError(err.message)
+        if (err.name !== 'AbortError') {
+          console.log(err)
+          setError(err.message)
+        }
       } finally {
         setIsLoading(false)
       }
@@ -91,7 +96,10 @@ export default function App() {
       return
     }
 
+    handleCloseMovie()
     fetchMovies()
+
+    return () => controller.abort()
   }, [query])
 
   function handleSelectMovie(id) {
@@ -284,6 +292,17 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie
 
+  useEffect(() => {
+    const callback = (e) => {
+      if (e.code === 'Escape') {
+        onCloseMovie()
+      }
+    }
+    document.addEventListener('keydown', callback)
+
+    return () => document.removeEventListener('keydown', callback)
+  }, [onCloseMovie])
+
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedID,
@@ -311,6 +330,12 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
 
     getMovieDetails()
   }, [selectedID])
+
+  useEffect(() => {
+    document.title = `Movie | ${title}`
+    return () => (document.title = 'usePopcorn')
+  }, [title])
+
   return (
     <div className="details">
       {isLoading ? (
