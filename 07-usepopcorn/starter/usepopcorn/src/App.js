@@ -1,23 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import StarRating from './StarRating'
+import { useMovies } from './hooks/useMovies'
+import { useLocalStorageState } from './hooks/useLocalStorageState'
+import { useKey } from './hooks/useKey'
 
+const KEY = 'f047f37f'
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
 // Structural Components
 
-const KEY = 'f047f37f'
 export default function App() {
-  const [movies, setMovies] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
   const [query, setQuery] = useState('')
   const [selectedID, setSelectedID] = useState(null)
-  // const [watched, setWatched] = useState([])
-  const [watched, setWatched] = useState(() => {
-    const storedValue = localStorage.getItem('watched')
-    return JSON.parse(storedValue)
-  })
+
+  const { movies, isLoading, error } = useMovies(query, handleCloseMovie)
+
+  const [watched, setWatched] = useLocalStorageState([], 'watched')
 
   function handleSelectMovie(id) {
     setSelectedID((selectedId) => (id === selectedId ? null : id))
@@ -29,56 +28,11 @@ export default function App() {
 
   function handleAddWathced(movie) {
     setWatched((watched) => [...watched, movie])
-
-    // localStorage.setItem('watched', JSON.stringify([...watched, movie]))
   }
 
   function handledDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id))
   }
-
-  useEffect(() => {
-    localStorage.setItem('watched', JSON.stringify(watched))
-  }, [watched])
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function fetchMovies() {
-      try {
-        setIsLoading(true)
-        setError('')
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-          { signal: controller.signal }
-        )
-        if (!res.ok)
-          throw new Error('Something went wrong with fetching movies')
-
-        const data = await res.json()
-        if (data.Response === 'False') throw new Error('Movie Not Found')
-        setMovies(data.Search)
-        setIsLoading(false)
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.log(err)
-          setError(err.message)
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (query.length < 3) {
-      setMovies([])
-      setError('')
-      return
-    }
-
-    handleCloseMovie()
-    fetchMovies()
-
-    return () => controller.abort()
-  }, [query])
 
   return (
     <>
@@ -271,16 +225,7 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
     onCloseMovie()
   }
 
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === 'Escape') {
-        onCloseMovie()
-      }
-    }
-    document.addEventListener('keydown', callback)
-
-    return () => document.removeEventListener('keydown', callback)
-  }, [onCloseMovie])
+  useKey('escape', onCloseMovie)
 
   useEffect(() => {
     if (userRating) countRef.current++
@@ -367,23 +312,13 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
 function Search({ query, setQuery }) {
   const inputEl = useRef(null)
 
-  useEffect(() => {
-    const callback = (e) => {
-      if (document.activeElement === inputEl.current) return false
-      if (e.code === 'Enter') {
-        inputEl.current.focus()
-        setQuery('')
-      }
-    }
+  useKey('enter', () => {
+    if (document.activeElement === inputEl.current) return false
 
-    document.addEventListener('keydown', callback)
-    return () => document.removeEventListener('keydown', callback)
-  }, [setQuery])
+    inputEl.current.focus()
+    setQuery('')
+  })
 
-  // useEffect(() => {
-  //   const el = document.querySelector('.search')
-  //   el.focus()
-  // }, [])
   return (
     <input
       className="search"
@@ -417,29 +352,6 @@ function MovieList({ movies, onSelectMovie }) {
     </ul>
   )
 }
-
-/*
-function WatchedBox() {
-  const [isOpen2, setIsOpen2] = useState(true)
-
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen2((open) => !open)}
-      >
-        {isOpen2 ? '–' : '+'}
-      </button>
-      {isOpen2 && (
-        <>
-          <WatchedSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
-        </>
-      )}
-    </div>
-  )
-}
-*/
 
 function WatchedSummary({ watched }) {
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating))
