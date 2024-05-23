@@ -8,6 +8,8 @@ import Login from "./pages/Login.jsx";
 import CityList from "./components/CityList.jsx";
 import { useEffect, useState } from "react";
 import CountryList from "./components/CountryList.jsx";
+import City from "./components/City.jsx";
+import Form from "./components/Form.jsx";
 
 const BASE_URL = "http://localhost:3000/";
 
@@ -42,6 +44,7 @@ const App = () => {
             index
             element={<CityList cities={cities} isLoading={isLoading} />}
           />
+          <Route path="cities/:id" element={<City />} />
           <Route
             path="cities"
             element={<CityList cities={cities} isLoading={isLoading} />}
@@ -50,7 +53,7 @@ const App = () => {
             path="countries"
             element={<CountryList cities={cities} isLoading={isLoading} />}
           />
-          <Route path="form" element={<p>Form</p>} />
+          <Route path="form" element={<Form />} />
         </Route>
         <Route path="login" element={<Login />} />
         <Route path="*" element={<PageNotFound />} />
