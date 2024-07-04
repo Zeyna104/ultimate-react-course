@@ -26,6 +26,7 @@ function UpdateSettingsForm() {
     mutate({ [field]: value });
   };
   if (isLoading) return <Spinner />;
+
   return (
     <Form>
       <FormRow label="Minimum nights/booking">
