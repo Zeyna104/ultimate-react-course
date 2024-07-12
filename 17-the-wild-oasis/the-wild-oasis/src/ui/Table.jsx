@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { createContext, useContext } from "react";
+import styled from 'styled-components';
+import { createContext, useContext } from 'react';
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -71,8 +71,8 @@ const Table = ({ columns, children }) => {
       }}
     >
       <StyledTable
-        role="table
-      "
+        role='table
+      '
       >
         {children}
       </StyledTable>
@@ -83,7 +83,7 @@ const Table = ({ columns, children }) => {
 const Header = ({ children }) => {
   const { columns } = useContext(TableContext);
   return (
-    <StyledHeader role="row" $columns={columns} as="header">
+    <StyledHeader role='row' $columns={columns} as='header'>
       {children}
     </StyledHeader>
   );
@@ -92,7 +92,7 @@ const Header = ({ children }) => {
 const Row = ({ children }) => {
   const { columns } = useContext(TableContext);
   return (
-    <StyledRow role="row" $columns={columns}>
+    <StyledRow role='row' $columns={columns}>
       {children}
     </StyledRow>
   );
