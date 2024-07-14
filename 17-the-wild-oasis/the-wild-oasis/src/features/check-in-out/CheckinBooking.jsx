@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import BookingDataBox from "../bookings/BookingDataBox.jsx";
 
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
@@ -8,6 +7,12 @@ import Button from "../../ui/Button.jsx";
 import ButtonText from "../../ui/ButtonText.jsx";
 
 import { useMoveBack } from "../../hooks/useMoveBack.js";
+import { useBooking } from "../bookings/useBooking.js";
+import Spinner from "../../ui/Spinner.jsx";
+import BookingDataBox from "../bookings/BookingDataBox.jsx";
+import { useEffect, useState } from "react";
+import Checkbox from "../../ui/Checkbox.jsx";
+import { useCheckin } from "./useCheckin.js";
 
 const Box = styled.div`
   /* Box */
@@ -18,9 +23,17 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
+  const [confirmPaid, setConfirmPaid] = useState(false);
+  const { checkin, isCheckingIn } = useCheckin();
+
+  const { booking, isLoading } = useBooking();
   const moveBack = useMoveBack();
 
-  const booking = {};
+  useEffect(() => {
+    setConfirmPaid(booking?.isPaid ?? false);
+  }, [booking?.isPaid]);
+
+  if (isLoading) return <Spinner />;
 
   const {
     id: bookingId,
@@ -31,7 +44,10 @@ function CheckinBooking() {
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!confirmPaid) return false;
+    checkin(bookingId);
+  }
 
   return (
     <>
@@ -41,9 +57,21 @@ function CheckinBooking() {
       </Row>
 
       <BookingDataBox booking={booking} />
+      <Box>
+        <Checkbox
+          checked={confirmPaid}
+          onChange={() => setConfirmPaid((prevState) => !prevState)}
+          disabled={isCheckingIn || confirmPaid}
+          id="confirm"
+        >
+          I confirm that {guests.fullName} has paid the total amount.
+        </Checkbox>
+      </Box>
 
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
+        <Button onClick={handleCheckin} disabled={!confirmPaid || isCheckingIn}>
+          Check in booking #{bookingId}
+        </Button>
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>
