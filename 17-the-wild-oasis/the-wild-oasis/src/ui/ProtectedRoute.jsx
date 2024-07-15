@@ -1,8 +1,8 @@
-import { useUser } from "../features/authentication/useUser.js";
-import Spinner from "./Spinner.jsx";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useUser } from '../features/authentication/useUser.js';
+import Spinner from './Spinner.jsx';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const FullPage = styled.div`
   height: 100vh;
@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
 
   // 2. if there is no authenticated user, redirect to the login
   useEffect(() => {
-    if (!isAuthenticated && !isLoading) navigate("/login");
+    if (!isAuthenticated && !isLoading) navigate('/login');
   }, [isAuthenticated, isLoading, navigate]);
 
   // 3. while loading, show a spinner
