@@ -36,7 +36,10 @@ function UpdateUserDataForm() {
       );
   }
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    setFullName(currentFullName);
+    setAvatar(null);
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
