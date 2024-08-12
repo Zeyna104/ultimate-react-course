@@ -1,13 +1,18 @@
 import UpdateProfileForm from "@/app/_components/UpdateProfileForm";
 import SelectCountry from "@/app/_components/SelectCountry";
+import { auth } from "@/app/_lib/auth";
+import { getGuest } from "@/app/_lib/data-service";
 
 export const metadata = {
   title: "Update profile",
 };
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+  const guest = await getGuest(session.user.email);
+
   const nationality = "portugal";
-  
+
   return (
     <div>
       <h2 className="font-semibold text-2xl text-accent-400 mb-4">
@@ -18,7 +23,7 @@ export default function Page() {
         Providing the following information will make your check-in process
         faster and smoother. See you soon!
       </p>
-      <UpdateProfileForm>
+      <UpdateProfileForm guest={guest}>
         <SelectCountry
           name="nationality"
           id="nationality"
