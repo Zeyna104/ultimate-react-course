@@ -1,14 +1,17 @@
 "use client";
 
 import { updateGuest } from "@/app/_lib/actions";
+import SubmitButton from "./SubmitButton";
+import { useState } from "react";
 
 export default function UpdateProfileForm({ guest, children }) {
+  const [state, setState] = useState(); // ! for educational purpose that we should render sc as a children of cr
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
 
   return (
     <form
       action={updateGuest}
-      className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+      className="flex flex-col gap-6 px-12 py-8 text-lg bg-primary-900"
     >
       <div className="space-y-2">
         <label>Full name</label>
@@ -16,7 +19,7 @@ export default function UpdateProfileForm({ guest, children }) {
           defaultValue={fullName}
           name="fullName"
           disabled
-          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+          className="w-full px-5 py-3 rounded-sm shadow-sm bg-primary-200 text-primary-800 disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
 
@@ -26,7 +29,7 @@ export default function UpdateProfileForm({ guest, children }) {
           defaultValue={email}
           name="email"
           disabled
-          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+          className="w-full px-5 py-3 rounded-sm shadow-sm bg-primary-200 text-primary-800 disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
 
@@ -49,14 +52,14 @@ export default function UpdateProfileForm({ guest, children }) {
         <input
           defaultValue={nationalID}
           name="nationalID"
-          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+          className="w-full px-5 py-3 rounded-sm shadow-sm bg-primary-200 text-primary-800"
         />
       </div>
 
-      <div className="flex justify-end items-center gap-6">
-        <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-          Update profile
-        </button>
+      <div className="flex items-center justify-end gap-6">
+        <SubmitButton pendingLabel="Updating reservation...">
+          Update reservation
+        </SubmitButton>
       </div>
     </form>
   );
